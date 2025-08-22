@@ -32,3 +32,6 @@ else
     echo -e "${BOLD}${GREEN}Free Memory: ${free_memory}MB ${NC}"
 fi
 
+header "Disk Usage"
+
+disk_usage=$(df -h | awk '$NF=="/"{printf "%s\t%s\t%s\t%s\n", $1, $2, $3, $5}')
