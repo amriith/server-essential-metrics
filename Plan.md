@@ -20,3 +20,5 @@
 16. Log file rotation and cleanup recommendations
 17. Cron job execution status and failures
 18. Export reports in multiple formats
+
+iftop -i eth0

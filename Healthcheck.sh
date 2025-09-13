@@ -60,3 +60,7 @@ else
     echo -e "${BOLD}${GREEN}Disk usage is ${disk_percent}% - Good.${NC}"
 fi
 
+#Peak Load Times and Average
+header "Peak Load Times and Average"
+uptime_info=$(uptime)
+echo "$uptime_info"
