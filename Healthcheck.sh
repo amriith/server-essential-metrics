@@ -15,7 +15,7 @@ separator="-----------------------------------------------------------------"
 echo -e "${BOLD}${GREEN}Healthcheck started at $(date +%Y-%m-%d\ %H:%M:%S)${NC}"
 
 header(){
-    echo -e "${BOLD}${ORANGE}$1${NC}"
+    echo -e "${BOLD}${GOLD}$1${NC}"
     echo "${separator}"
 }
 
@@ -65,48 +65,26 @@ header "Peak Load Times and Average"
 uptime_info=$(uptime)
 echo "$uptime_info"
 
-# Extract load averages from uptime output
-load_1min=$(uptime | awk -F'load average:' '{print $2}' | awk -F',' '{print $1}' | sed 's/^[ \t]*//')
-load_5min=$(uptime | awk -F'load average:' '{print $2}' | awk -F',' '{print $2}' | sed 's/^[ \t]*//')
-load_15min=$(uptime | awk -F'load average:' '{print $2}' | awk -F',' '{print $3}' | sed 's/^[ \t]*//')
 
-# Get number of CPU cores
+load_15min=$(uptime | awk -F 'load average:' '{print $2}' | awk -F',' '{print $3}' | sed 's/^[ \t]*//')
+
 cpu_cores=$(nproc)
 
 echo ""
 echo "Load Averages:"
-echo "  1 minute:  $load_1min"
-echo "  5 minutes: $load_5min"
-echo "  15 minutes: $load_15min"
-echo "  CPU Cores: $cpu_cores"
+echo -e "${BOLD}  15 minutes: $load_15min${NC}"
+echo -e "${BOLD}{}  CPU Cores: $cpu_cores${NC}"
 
-# Analyze system performance based on load averages
-echo ""
-echo "System Performance Analysis:"
-
-# Check 1-minute load average
-if [ $(echo "$load_1min > $cpu_cores" | bc -l) -eq 1 ]; then
-    echo -e "${BOLD}${RED}CRITICAL: 1-minute load average ($load_1min) exceeds CPU cores ($cpu_cores)${NC}"
-elif [ $(echo "$load_1min > $cpu_cores * 0.8" | bc -l) -eq 1 ]; then
-    echo -e "${BOLD}${YELLOW}WARNING: 1-minute load average ($load_1min) is high${NC}"
-else
-    echo -e "${BOLD}${GREEN}GOOD: 1-minute load average ($load_1min) is normal${NC}"
-fi
-
-# Check 5-minute load average
-if [ $(echo "$load_5min > $cpu_cores" | bc -l) -eq 1 ]; then
-    echo -e "${BOLD}${RED}CRITICAL: 5-minute load average ($load_5min) exceeds CPU cores ($cpu_cores)${NC}"
-elif [ $(echo "$load_5min > $cpu_cores * 0.8" | bc -l) -eq 1 ]; then
-    echo -e "${BOLD}${YELLOW}WARNING: 5-minute load average ($load_5min) is high${NC}"
-else
-    echo -e "${BOLD}${GREEN}GOOD: 5-minute load average ($load_5min) is normal${NC}"
-fi
-
-# Check 15-minute load average
+# Use bc for decimal comparison since load averages can be decimals
 if [ $(echo "$load_15min > $cpu_cores" | bc -l) -eq 1 ]; then
-    echo -e "${BOLD}${RED}CRITICAL: 15-minute load average ($load_15min) exceeds CPU cores ($cpu_cores)${NC}"
-elif [ $(echo "$load_15min > $cpu_cores * 0.8" | bc -l) -eq 1 ]; then
-    echo -e "${BOLD}${YELLOW}WARNING: 15-minute load average ($load_15min) is high${NC}"
+    echo -e "${BOLD}${RED}WARNING: Load average is ${load_15min} - Consider freeing up CPU resources.${NC}"
 else
-    echo -e "${BOLD}${GREEN}GOOD: 15-minute load average ($load_15min) is normal${NC}"
+    echo -e "${BOLD}${GREEN}Load average is ${load_15min} - Good.${NC}"
 fi
+
+#Network Usage
+header "Network Usage"
+netstat -an | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
+
+#Server Login Details and Suspicious Login Attempts
+
