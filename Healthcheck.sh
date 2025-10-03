@@ -15,7 +15,7 @@ separator="-----------------------------------------------------------------"
 echo -e "${BOLD}${GREEN}Healthcheck started at $(date +%Y-%m-%d\ %H:%M:%S)${NC}"
 
 header(){
-    echo -e "${BOLD}${GOLD}$1${NC}"
+    echo -e "${BOLD}${ORANGE}$1${NC}"
     echo "${separator}"
 }
 
@@ -66,25 +66,15 @@ uptime_info=$(uptime)
 echo "$uptime_info"
 
 
-load_15min=$(uptime | awk -F 'load average:' '{print $2}' | awk -F',' '{print $3}' | sed 's/^[ \t]*//')
+load_15mins=$(uptime | awk -F 'load average:' 'print $2' | awk -F ',' '{print $3}' | sed 's/^[ \t]*//')
 
 cpu_cores=$(nproc)
 
-echo ""
-echo "Load Averages:"
-echo -e "${BOLD}  15 minutes: $load_15min${NC}"
-echo -e "${BOLD}{}  CPU Cores: $cpu_cores${NC}"
-
-# Use bc for decimal comparison since load averages can be decimals
-if [ $(echo "$load_15min > $cpu_cores" | bc -l) -eq 1 ]; then
-    echo -e "${BOLD}${RED}WARNING: Load average is ${load_15min} - Consider freeing up CPU resources.${NC}"
-else
-    echo -e "${BOLD}${GREEN}Load average is ${load_15min} - Good.${NC}"
+if [ $(echo "$load_15mins gt $cpu_cores)]
+then 
+    echo -e " ${BOLD}${RED} High Load Average: $load_15mins on $cpu_cores CPU cores ${NC}"
+else 
+    echo -e " ${BOLD}${GREEN} Healthy Load Average: $load_15mins on $cpu_cores CPU cores ${NC}"
 fi
 
-#Network Usage
-header "Network Usage"
-netstat -an | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
-
-#Server Login Details and Suspicious Login Attempts
-
+#
