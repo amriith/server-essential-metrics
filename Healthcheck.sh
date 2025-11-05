@@ -77,4 +77,11 @@ else
     echo -e " ${BOLD}${GREEN} Healthy Load Average: $load_15mins on $cpu_cores CPU cores ${NC}"
 fi
 
-#
+# Server Logins / Suspicious Activity
+header "Server Logins / Suspicious Activity"
+
+# Show last 5 login attempts
+last -n 5
+faillog -a 2>/dev/null | awk '$4 > 1'
+
+
