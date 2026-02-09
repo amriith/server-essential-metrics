@@ -128,7 +128,7 @@ fi
 
 echo "${separator}"
 
-# Outdated Security Packages
+# Outdated Security Package
 header "🛡️ Outdated Security Packages"
 if command -v yum >/dev/null 2>&1; then
     sudo yum check-update --security 2>/dev/null || echo "Unable to check for security updates"
