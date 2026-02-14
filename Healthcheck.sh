@@ -116,7 +116,7 @@ faillog -a 2>/dev/null | awk '$4 > 1' || echo "No failed login data available"
 
 echo "${separator}"
 
-# Details of Open ports
+# Details of Open ports and 
 header " 🖧 Open Ports and Services"
 if command -v ss >/dev/null 2>&1; then
     ss -tuln
